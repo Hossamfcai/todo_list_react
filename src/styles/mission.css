@@ -1,0 +1,10 @@
+.mission {
+  align-items: center;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.5s;
+}
+.mission:hover {
+  transform: scale(1.04);
+}
