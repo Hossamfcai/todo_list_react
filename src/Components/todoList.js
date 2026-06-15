@@ -3,13 +3,13 @@ import Stack from "@mui/material/Stack";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Mission from "./Mission";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import AddForm from "./AddForm";
 import Paper from "@mui/material/Paper";
 import Notification from "./Notification";
 import Box from "@mui/material/Box";
 import { TransitionGroup } from "react-transition-group";
-import { DataContext } from "../Contexts/DataContext";
+import { DataContext, NotificationContext } from "../Contexts/DataContext";
 import Collapse from "@mui/material/Collapse";
 
 export default function TodoList() {
@@ -21,6 +21,12 @@ export default function TodoList() {
     state: false,
     msg: "",
   });
+
+  const dataValue = useMemo(() => ({ missions, setMissions }), [missions]);
+  const notificationValue = useMemo(
+    () => ({ notificationState, setNotificationState }),
+    [notificationState],
+  );
 
   const handleAlignment = (event, newAlignment) => {
     if (newAlignment !== null) {
@@ -97,9 +103,7 @@ export default function TodoList() {
   });
   console.log(filterData);
   return (
-    <DataContext.Provider
-      value={{ missions, setMissions, notificationState, setNotificationState }}
-    >
+    <DataContext.Provider value={dataValue}>
       <>
         <Paper elevation={3} sx={{ borderRadius: "10px" }}>
           <Container
@@ -162,11 +166,13 @@ export default function TodoList() {
                 {filterData.map((mission, i) => {
                   return (
                     <Collapse>
-                      <Mission
-                        key={i}
-                        mission={mission}
-                        completeMission={completeMission}
-                      />
+                      <NotificationContext.Provider value={notificationValue}>
+                        <Mission
+                          key={i}
+                          mission={mission}
+                          completeMission={completeMission}
+                        />
+                      </NotificationContext.Provider>
                     </Collapse>
                   );
                 })}

@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useContext } from "react";
-import { DataContext } from "../Contexts/DataContext";
+import { DataContext, NotificationContext } from "../Contexts/DataContext";
 import Slide from "@mui/material/Slide";
 import { forwardRef } from "react";
 
@@ -23,9 +23,10 @@ export default function FormDialog({
   handleDelete,
 }) {
   const dataContext = useContext(DataContext);
+  const notificationContext = useContext(NotificationContext);
 
   function showNotification(msg) {
-    dataContext.setNotificationState((prev) => {
+    notificationContext.setNotificationState((prev) => {
       let newState = {
         state: !prev.state,
         msg: msg,
@@ -34,7 +35,7 @@ export default function FormDialog({
     });
 
     setTimeout(() => {
-      dataContext.setNotificationState((prev) => {
+      notificationContext.setNotificationState((prev) => {
         return { state: !prev.state, msg: prev.msg };
       });
     }, 1500);

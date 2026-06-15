@@ -8,7 +8,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { green, indigo, red } from "@mui/material/colors";
 import Paper from "@mui/material/Paper";
 import { useContext, useState } from "react";
-import { DataContext } from "../Contexts/DataContext";
+import { DataContext, NotificationContext } from "../Contexts/DataContext";
 import FormDialog from "./FormDialog";
 
 export default function Mission({ mission, completeMission }) {
@@ -20,6 +20,7 @@ export default function Mission({ mission, completeMission }) {
     border: "2px solid",
   };
   const dataContext = useContext(DataContext);
+
   const [dialogType, setDialogType] = useState("");
   const [open, setOpen] = useState(false);
 
