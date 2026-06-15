@@ -3,7 +3,7 @@ import Stack from "@mui/material/Stack";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Mission from "./Mission";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import AddForm from "./AddForm";
 import Paper from "@mui/material/Paper";
 import Notification from "./Notification";
@@ -34,62 +34,68 @@ export default function TodoList() {
     }
   };
 
-  function completeMission(id) {
-    let targetMission = {};
+  const completeMission = useCallback(
+    (id) => {
+      let targetMission = {};
 
-    let newArr = missions.map((mission) => {
-      if (mission.id === id) {
-        mission.pending = !mission.pending;
-        mission.completed = !mission.completed;
-        targetMission = mission;
-      }
-      console.log(targetMission);
-      return mission;
-    });
-
-    setMissions(newArr);
-    localStorage.setItem("missions", JSON.stringify(newArr));
-
-    setNotificationState((prev) => {
-      console.log(targetMission.completed);
-      let newState = {
-        state: !prev.state,
-        msg:
-          targetMission.completed && !targetMission.pending
-            ? "Successfully the mission is completed"
-            : "Successfully the mission is pending",
-      };
-      return newState;
-    });
-
-    setTimeout(() => {
-      setNotificationState((prev) => {
-        return { state: !prev.state, msg: prev.msg };
+      let newArr = missions.map((mission) => {
+        if (mission.id === id) {
+          mission.pending = !mission.pending;
+          mission.completed = !mission.completed;
+          targetMission = mission;
+        }
+        console.log(targetMission);
+        return mission;
       });
-    }, 1500);
-  }
 
-  function handleAddMission(mission, msg) {
-    let newArray = [...missions];
-    newArray.push({ ...mission, id: Math.random() });
-    console.log(newArray);
-    setMissions(newArray);
-    localStorage.setItem("missions", JSON.stringify(newArray));
+      setMissions(newArr);
+      localStorage.setItem("missions", JSON.stringify(newArr));
 
-    setNotificationState((prev) => {
-      let newState = {
-        state: !prev.state,
-        msg: msg,
-      };
-      return newState;
-    });
-
-    setTimeout(() => {
       setNotificationState((prev) => {
-        return { state: !prev.state, msg: prev.msg };
+        console.log(targetMission.completed);
+        let newState = {
+          state: !prev.state,
+          msg:
+            targetMission.completed && !targetMission.pending
+              ? "Successfully the mission is completed"
+              : "Successfully the mission is pending",
+        };
+        return newState;
       });
-    }, 1500);
-  }
+
+      setTimeout(() => {
+        setNotificationState((prev) => {
+          return { state: !prev.state, msg: prev.msg };
+        });
+      }, 1500);
+    },
+    [missions],
+  );
+
+  const handleAddMission = useCallback(
+    (mission, msg) => {
+      let newArray = [...missions];
+      newArray.push({ ...mission, id: Math.random() });
+      console.log(newArray);
+      setMissions(newArray);
+      localStorage.setItem("missions", JSON.stringify(newArray));
+
+      setNotificationState((prev) => {
+        let newState = {
+          state: !prev.state,
+          msg: msg,
+        };
+        return newState;
+      });
+
+      setTimeout(() => {
+        setNotificationState((prev) => {
+          return { state: !prev.state, msg: prev.msg };
+        });
+      }, 1500);
+    },
+    [missions],
+  );
 
   // eslint-disable-next-line array-callback-return
   const filterData = missions.filter((mission) => {

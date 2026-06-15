@@ -7,8 +7,8 @@ import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { green, indigo, red } from "@mui/material/colors";
 import Paper from "@mui/material/Paper";
-import { useContext, useState } from "react";
-import { DataContext, NotificationContext } from "../Contexts/DataContext";
+import { useCallback, useContext, useState } from "react";
+import { DataContext } from "../Contexts/DataContext";
 import FormDialog from "./FormDialog";
 
 export default function Mission({ mission, completeMission }) {
@@ -32,36 +32,42 @@ export default function Mission({ mission, completeMission }) {
     setOpen(false);
   };
 
-  const handleSubmit = (event, id) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries(formData.entries());
-    let newArr = dataContext.missions.map((mission) => {
-      if (mission.id === id) {
-        mission = {
-          ...mission,
-          details: formJson.details,
-          mission: formJson.mission,
-        };
-      }
-      return mission;
-    });
+  const handleSubmit = useCallback(
+    (event, id) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const formJson = Object.fromEntries(formData.entries());
+      let newArr = dataContext.missions.map((mission) => {
+        if (mission.id === id) {
+          mission = {
+            ...mission,
+            details: formJson.details,
+            mission: formJson.mission,
+          };
+        }
+        return mission;
+      });
 
-    dataContext.setMissions(newArr);
-    localStorage.setItem("missions", JSON.stringify(newArr));
+      dataContext.setMissions(newArr);
+      localStorage.setItem("missions", JSON.stringify(newArr));
 
-    handleClose();
-  };
+      handleClose();
+    },
+    [dataContext],
+  );
 
-  const handleDelete = (id) => {
-    let newArr = dataContext.missions.filter((mission) => {
-      return mission.id !== id;
-    });
-    console.log(dataContext.missions);
-    dataContext.setMissions(newArr);
-    localStorage.setItem("missions", JSON.stringify(newArr));
-    handleClose();
-  };
+  const handleDelete = useCallback(
+    (id) => {
+      let newArr = dataContext.missions.filter((mission) => {
+        return mission.id !== id;
+      });
+      console.log(dataContext.missions);
+      dataContext.setMissions(newArr);
+      localStorage.setItem("missions", JSON.stringify(newArr));
+      handleClose();
+    },
+    [dataContext],
+  );
 
   return (
     <>
